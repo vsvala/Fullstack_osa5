@@ -1,0 +1,11 @@
+POST http://localhost:3003/api/notes
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkthIiwiaWQiOiI1YjUwYWZiNTBlZDk4ZTQ4YzhhZTM5MzQiLCJpYXQiOjE1MzIwMTQ1ODJ9.Qfv-LgIRljmPfrEVVeKheW_QQPrYSvlZ2VMnxb6a0IM
+
+{
+ "title": "Lahetetty VS Code REST clientilla ", 
+ "author":"true",
+ "url":"Wed",
+ "likes":"2",
+  "userId": "5b5071892de0bd27418d130f"
+}
