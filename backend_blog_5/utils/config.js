@@ -1,4 +1,4 @@
-if (process.env.NODE_ENV !== 'production') { // Koodi lataa ympäristömuuttujat tiedostosta .env jos se ei ole tuotantomoodissa. 
+if (process.env.NODE_ENV !== 'production') { // Koodi lataa ympäristömuuttujat tiedostosta .env jos se ei ole tuotantomoodissa.
   require('dotenv').config()
 }
 let port = process.env.PORT

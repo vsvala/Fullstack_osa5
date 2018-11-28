@@ -1,3 +1,3 @@
 #!/bin/sh
 npm run build
-cp -r build ../../osa5/fullstack_osa5backend/
+cp -r build ../../Fullstack_osa5/backend_blog_5/

@@ -9,6 +9,7 @@ const blogSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 })
 
+// formatoidaa mongon sisäinen esitysmuoto frontille sopivamksi esim  _id kenttä ja _v:0
 blogSchema.statics.format = (blog) => {
   return {
     id: blog._id,

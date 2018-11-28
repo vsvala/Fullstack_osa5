@@ -10,13 +10,6 @@ const logger = (request, response, next) => {
   console.log('---')
   next()
 }
-
-// middleware errorien käsittelyyn
-const error = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
-
-
 // token middleware
 const tokenExtractor = (request, response, next) => {
   const authorization = request.get('Authorization')
@@ -27,6 +20,10 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
+// middleware errorien käsittelyyn
+const error = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
 
 module.exports = {
   logger,
