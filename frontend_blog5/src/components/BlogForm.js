@@ -40,7 +40,7 @@ const BlogForm = ({ onSubmit, handleChange, handleChange1, handleChange2, handle
               <input
                 name="likes"
                 value ={likes}
-                onChange={this.handleChange3}
+                onChange={handleChange3}
                   />
               </div>
 

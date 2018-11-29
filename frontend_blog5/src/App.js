@@ -15,9 +15,9 @@ class App extends React.Component {
     super(props)
     this.state = {
       blogs: [],
-      newHeader: 'new title...',
-      newText: 'new author..',
-      newUrl: 'new url..',
+      newHeader: '',
+      newText: '',
+      newUrl: '',
       like:'',
       showAll:'true',
       error: null,
@@ -29,54 +29,113 @@ class App extends React.Component {
     }
   }
 
-  componentDidMount() { // lifecycle-metodi, jota React-kutsuu heti komponentin ensimmäisen renderöinnin jälkeen
+  // lifecycle-metodi, jota React-kutsuu heti komponentin ensimmäisen renderöinnin jälkeen
+  componentDidMount() { 
     blogService
     .getAll()
     .then(blogs =>{
       this.setState({ blogs })
      })
-// kun sivulle tullaan uudelleen(uudelleenlataus)tulee tarkistaa löytyykö local storagesta tiedot kirjautuneesta käyttäjästä. 
+
+
+// tarkistetaan löytyykö local storagesta tiedot kirjautuneesta käyttäjästä
 //Jos löytyy, asetetaan ne sovelluksen tilaan ja noteServicelle.
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON) //muutetaantakaisin JS-olennoksi
       this.setState({user})
-      blogService.setToken(user.token)
-     
+      blogService.setToken(user.token)    
     } 
   } 
 
+  // Blogin lisäys tai päivitys
   addBlog = async(event) => {
     event.preventDefault()
     //this.blogForm.toggleVisibility() //moduulissa
-    try {
+    //try {
     const blogObject = {
       title: this.state.newHeader,
       author: this.state.newText,
       url: this.state.newUrl,
       likes:this.state.like,
-
     }
-    // if (this.includesBlog){
-    //   const blog = this.findBlog();
-   
-    //    if(window.confirm(blog.title +" blogikirjoitus on jo luotu, haluatko muokata tykkäyksiä")) {
-    //      blogService
-    //                     .update(blog.id, blogObject)
-    //                     .then(response => {
-    //                         this.setState({
-    //                             blogs: this.state.blogs.map(p => p.id !== blog.id ? p : blogObject),
-    //                             newHeader: '',
-    //                             newText:'',
-    //                             newUrl: '',
-    //                             like:'',
-    //                             notification: `Blogikirjoituksen '${blogObject.title}'päivitys onnistui!`
-    //          })
-   
-    //          setTimeout(() => {
-    //            this.setState({notification: null})
-    //          }, 5000)
-    //        })
+    //jos samanniminen blogi olemassa päivitetään
+   if (this.includesBlog(blogObject)){
+     this.updateBlog(blogObject)
+       }
+  // luodaan uusipäiväkirjaolio ja lähetetään tietokantaan  
+  else{
+      const saveBlog = await blogService.create(blogObject)
+
+        this.setState({
+          blogs: this.state.blogs.concat(saveBlog),
+          newHeader: '',
+          newText: '',
+          newUrl: '',
+          like: '',
+          notification: `A new blog '${blogObject.title}' by '${blogObject.author}' added`
+        })
+        this.blogForm.toggleVisibility()
+
+        setTimeout(() => {
+          this.setState({notification: null})
+        }, 5000)
+      }
+    }
+      //catch (exception) {
+      //   console.log(exception)
+      //   this.setState({
+      //     error: 'something went wrong and blog is not saved'
+      //   })
+      //   setTimeout(() => {
+      //     this.setState({ error: '' })
+      //   }, 5000)
+  
+        // })
+  
+ // tarkistetaan onko samannimistä blogia
+  includesBlog = (blogObject) => {
+    const blogger = this.state.blogs.map(blog=> blog.title.toLowerCase());
+    if (blogger.includes(blogObject.title.toLowerCase())) {
+        return true;
+    } else {
+        return false;
+    }
+  }
+  
+  // etsitään blogi titlen perusteella
+  findBlog = () => {
+    let sama = this.state.blogs.find(blog => blog.title.toLowerCase() === this.state.newHeader.toLowerCase())
+    if (sama) {
+        return sama;
+    } else {
+        return false;
+    }
+  }
+
+
+// blogin päivitys
+  updateBlog=(blogObject) =>{
+  //etsitään smanniminen blogi
+  const blog = this.findBlog();
+  if(window.confirm(blog.title +" blogikirjoitus on jo luotu, haluatko muokata tykkäyksiä")) {
+     blogService
+                   .update(blog.id, blogObject)
+                   .then(response => {
+                       this.setState({
+                           blogs: this.state.blogs.map(p => p.id !== blog.id ? p : blogObject),
+                           newHeader: '',
+                           newText:'',
+                           newUrl: '',
+                           like:'',
+                           notification: `Blogikirjoituksen '${blogObject.title}'päivitys onnistui!`
+                       })
+                      setTimeout(() => {
+                      this.setState({notification: null})
+                    }, 5000)
+                    })
+      }
+  }
     //        .catch(error => {
     //          this.setState({
     //                      error: `Blogi '${blogObject.title}' on jo valitettavasti poistettu palvelimelta`,
@@ -86,59 +145,9 @@ class App extends React.Component {
     //                      this.setState({error: null})
     //                    }, 5000)
     //                  })
-    //  }
-       //}
 
-      //  else{
-        const saveBlog = await blogService.create(blogObject)
-  //  blogService
-  //     .create(blogObject)
-  //     .then(NewHeader => {
-        this.setState({
-          blogs: this.state.blogs.concat(saveBlog),
-          newHeader: '',
-          newText: '',
-          newUrl: '',
-          like: '',
-          notification: `A new blog '${blogObject.title}' by '${blogObject.author}' added`
-        })
-        this.newBlogForm.toggleVisibility()
 
-        setTimeout(() => {
-          this.setState({notification: null})
-        }, 5000)
-      } catch (exception) {
-        console.log(exception)
-        this.setState({
-          error: 'something went wrong and blog is not saved'
-        })
-        setTimeout(() => {
-          this.setState({ error: '' })
-        }, 5000)
-  
-        // })
-  }
-}
-  includesBlog = () => {
-    const blogger = this.state.blogs.map(blog=> blog.title.toLowerCase());
-  
-    if (blogger.includes(this.state.newHeader.toLowerCase())) {
-        return true;
-    } else {
-        return false;
-    }
-  }
-  
-  findBlog = () => {
-    let p = this.state.blogs.find(blog => blog.title.toLowerCase() === this.state.newHeader.toLowerCase())
-  
-    if (p) {
-        return p;
-    } else {
-        return false;
-    }
-  }
-
+// likejen lisäys ja päivitys toiminto
  addLike = (id) => {
     return () => {
       const blog = this.state.blogs.find(n => n.id === id)
@@ -151,7 +160,6 @@ class App extends React.Component {
         url: blog.url,
         likes:blog.likes+1
       }
-
       blogService
       .update(blog.id, blogObject)
       .then(response => {
@@ -164,7 +172,6 @@ class App extends React.Component {
                               like:'',
                               notification: `Blogikirjoituksen '${blogObject.title}'liken lisäys onnistui!`
            })
- 
            setTimeout(() => {
              this.setState({notification: null})
            }, 5000)
@@ -179,8 +186,9 @@ class App extends React.Component {
                      }, 5000)
                    })
    }
-     }
+  }
 
+  // blogin poisto
   deleteBlog = (id) => {
     return () => {
         const blog = this.state.blogs.find(n => n.id === id)
@@ -236,13 +244,15 @@ class App extends React.Component {
     }
 }
 
+// uloskirjautuminen
 logout = () => {
   alert('localstorage cleared!');
    window.localStorage.removeItem('loggedBlogappUser')
  }
 
 
-  handleFieldChange=(event) => {
+// lomakkeenkäsittelijät
+  handleLoginFieldChange=(event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
   handleNoteChange = (event) => {
@@ -267,12 +277,6 @@ logout = () => {
 
 
   render() {
- 
- //const blogsToShow =
- //this.state.showAll ?
- //this.state.blogs 
- //this.state.blogs.filter(blog => blog.important === true)
-
 
 // määritellään render apufunktiot login ja blogin lomakkeiden generointia varten (moduulissa)
   const loginForm = () => (
@@ -309,12 +313,6 @@ const blogForm = () => (
       </Togglable>
   )
  
-const blogit = () => (
-  this.state.blogs.map(blog =>
-  <Blog key={blog._id} blog={blog} />
-)
-
-)
     return (
       <div>
         <h1>Blogs</h1>

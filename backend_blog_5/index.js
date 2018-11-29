@@ -28,12 +28,12 @@ mongoose
 app.use(middleware.tokenExtractor)
 app.use(cors())
 app.use(bodyParser.json())
-app.use(express.static('build'))
+app.use(express.static('build')) //tarkastaa express GET-tyyppisten HTTP-pyyntöjen yhteydessä ensin löytyykö pyynnön polkua vastaavan nimistä tiedostoa hakemistosta build
 app.use(middleware.logger) //määritelty utils tiedostossa middleware.js
 
 //app.use(middleware.tokenExtractor)
 
-//otetaan router middlewaret käyttöön ja määritellään polun alkuosa /api/?
+//otetaan router middlewaret käyttöön ja määritellään polun alkuosa /api/ ?
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)

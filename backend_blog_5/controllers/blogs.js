@@ -5,15 +5,6 @@ const User = require('../models/user')
 //moduuli sisältää kaikki blogeihin liittyvien reittien määrittelyt
 
 
-//siirretty middlewareen
-// const getTokenFrom = (request) => {
-//   const authorization = request.get('authorization')
-//   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-//     return authorization.substring(7)
-//   }
-//   return null
-// }
-
 
 // muistiinpanojen hakeminen tietokannasta
 blogsRouter.get('/', async (request, response) => {
@@ -39,18 +30,20 @@ blogsRouter.post('/', async (request, response) => {
       return response.status(401).json({ error: 'token missing or invalid' })
     }
 
-    if (body.title === undefined) {
+    if (body.title === '') {
       return response.status(400).json({ error: 'title missing' })
     }
-    if (body.url === undefined) {
+    if (body.author === '') {
+      return response.status(400).json({ error: 'author missing' })
+    }
+    if (body.url === '') {
       return response.status(400).json({ error: 'url missing' })
     }
-   // if (blog.likes === undefined) {
-      //     console.log('eimääritelty')
-      //     blog.likes === 0
-      //     console.log(blog.likes)
-      //     return response.status(400).json({ error: 'like content missing' })
-      //   }
+    // if (body.likes === '') {
+    //   console.log("LIKEEEEEEEEEEEEEE")
+    //   body.likes === 5
+    //   //return response.status(400).json({ error: 'like missing' })
+    // }
 
     const user = await User.findById(decodedToken.id)
     //const user = await User.findById(body.userId)
@@ -59,9 +52,18 @@ blogsRouter.post('/', async (request, response) => {
       title: body.title,
       author:body.author,
       url: body.url,
-      likes:body.likes === undefined? false : body.likes===0,
+      likes:body.likes ===''? false : body.likes === 0,
       user: user._id
     })
+
+    // if (body.likes === undefined) {
+    //   console.log('eimääritelty')
+    //   body.likes === 5
+    //   //blog.likes === 0
+    //   console.log(blog.likes)
+    //   return response.status(400).json({ error: 'like content missing' })
+    // }
+
     const savedBlog =await blog.save()
 
     user.blogs = user.blogs.concat(savedBlog._id)
@@ -99,6 +101,19 @@ blogsRouter.get('/:id', async (request, response) => {
     response.status(400).send({ error: 'malformatted id' })
   }
 })
+
+
+// app.get('/notes/:id', (request, response) => {
+//   const id = Number(request.params.id)
+//   const note = notes.find(note => note.id === id)
+
+//   if ( note ) {
+//     response.json(note)
+//   } else {
+//     response.status(404).end()
+//   }
+// })
+
 
 // muokkaus
 blogsRouter.put('/:id', (request, response) => {
