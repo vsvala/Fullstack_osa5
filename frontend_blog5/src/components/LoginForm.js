@@ -33,6 +33,8 @@ const LoginForm = ({ handleSubmit, handleChange, username, password }) => {
       </div>
     )
   }
+  
+ // Määritellään Proptypet myös LoginForm-komponentille:
   LoginForm.propTypes = {
     handleSubmit: PropTypes.func.isRequired,
     handleChange: PropTypes.func.isRequired,

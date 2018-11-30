@@ -10,7 +10,9 @@ describe.only('<SimpleBlog />', () => {
     }
 
     const noteComponent = shallow(<SimpleBlog blog={blog} />)
+   //console.log(noteComponent.debug())
     const contentDiv = noteComponent.find('.content')
+    //console.log(contentDiv.debug())
 
     expect(contentDiv.text()).toContain(blog.title)
     expect(contentDiv.text()).toContain(blog.author)
@@ -24,6 +26,7 @@ describe.only('<SimpleBloglikes />', () => {
   
       const noteComponent = shallow(<SimpleBlog blog={blog} />)
       const contentDiv = noteComponent.find('.liket')
+      //console.log(contentDiv.debug())
 
 expect(contentDiv.text()).toContain(blog.likes)
 })

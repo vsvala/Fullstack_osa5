@@ -25,13 +25,13 @@ class Togglable extends React.Component {
         <div style={showWhenVisible}> 
           {this.props.children}
           {/* koodi viittaa komponentin lapsiin, eli avaavan ja sulkevan tagin sisällä määriteltyihin React-elementteihin. */}
-          <button onClick={this.toggleVisibility}>cancel</button>
+          <button onClick={this.toggleVisibility}>hide</button>
         </div>
       </div>
     )
   }
 }
-
+//buttonLabel voidaan määritellä pakolliseksi string-tyyppiseksi propsiksi seuraavasti
 Togglable.propTypes = {
   buttonLabel: PropTypes.string.isRequired
 }

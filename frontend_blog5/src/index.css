@@ -4,7 +4,7 @@ body {
     font-family: sans-serif;
   }
   h1 {
-    color: green;
+    color: rgb(56, 136, 156);
     font-style: italic;
   }
   .person{
@@ -13,10 +13,10 @@ body {
     font-size: 15px;
   }
   .error {
-    color: red;
-    background: lightgrey;
+    color: black;
     font-size: 20px;
     border-style: solid;
+    border-color: red;
     border-radius: 5px;
     padding: 10px;
     margin-bottom: 10px;
@@ -24,7 +24,7 @@ body {
   
   .notification {
     color: black;
-    background: green;
+    border-color: green;
     font-size: 20px;
     border-style: solid;
     border-radius: 5px;

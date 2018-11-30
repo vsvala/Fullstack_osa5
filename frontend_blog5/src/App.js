@@ -1,6 +1,7 @@
 import React from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import Error from './components/Error'
 import Togglable from './components/Togglable'
 
 import LoginForm from './components/LoginForm'
@@ -51,7 +52,7 @@ class App extends React.Component {
   // Blogin lisäys tai päivitys
   addBlog = async(event) => {
     event.preventDefault()
-    //this.blogForm.toggleVisibility() //moduulissa
+    this.blogForm.toggleVisibility() //piilotetaan lisäysform kun lisätään blogii
     //try {
     const blogObject = {
       title: this.state.newHeader,
@@ -75,7 +76,6 @@ class App extends React.Component {
           like: '',
           notification: `A new blog '${blogObject.title}' by '${blogObject.author}' added`
         })
-        this.blogForm.toggleVisibility()
 
         setTimeout(() => {
           this.setState({notification: null})
@@ -250,14 +250,13 @@ logout = () => {
    window.localStorage.removeItem('loggedBlogappUser')
  }
 
-
 // lomakkeenkäsittelijät
   handleLoginFieldChange=(event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
-  handleNoteChange = (event) => {
-    this.setState({ newBlog: event.target.value })
-  }
+  // handleBlogFieldChange = (event) => {
+  //   this.setState({ [event.target.name]:event.target.value })
+  // }
   handleHeadChange = (event) => {
     console.log(event.target.value)
     this.setState({ newHeader: event.target.value })
@@ -312,12 +311,46 @@ const blogForm = () => (
       /> 
       </Togglable>
   )
- 
+ //const bylikes =this.state.blogs.map(blogs =>blog={blogs.likes})
+ // const liketetyt=bylikes.sort
+
+  // const blogForSort=this.state.blogs.map(blog =>
+  //   <Blog key={blog._id} blog={blog} 
+  //   deleteBlog={this.deleteBlog(blog.id)}
+  //   addLike={this.addLike(blog.id)}
+  //   user={this.state.user}
+  //    />
+  // )
+
+  // const Likes = (b1, b2) => b2.likes - b1.likes
+  // const favorites = this.state.blogs.sort(Likes)
+  // {this.favorites}
+
+  //laita jokaiselle listan undefine==anonymous
+  // if (this.state.blogs.user.name===undefined){
+  //   this.blogs.user.name="Anonymous"
+  // } 
+
+  const blogsForUser=this.state.blogs.map(blog =>
+    <Blog key={blog._id} blog={blog}  
+    deleteBlog={this.deleteBlog(blog.id)}
+    addLike={this.addLike(blog.id)}
+    user={this.state.user}  />     
+    //<Togglable buttonLabel="delete"> <button onClick={this.deleteBlog(blog.id)}>delete</button></Togglable> 
+    )
+
+  
+     const blogsForNonUser=this.state.blogs.map(blog =>
+      <Blog key={blog._id} blog={blog} 
+      addLike={this.addLike(blog.id)}
+      user={this.state.user}
+       />)
+
     return (
       <div>
         <h1>Blogs</h1>
 
-        <Notification message={this.state.error} />
+        <Error message={this.state.error} />
         <Notification message={this.state.notification}/>
 
      {/*  this.state.user === null on truthy, suoritetaan loginForm ja muussa tapauksessa noteForm 
@@ -329,34 +362,17 @@ const blogForm = () => (
       </div> 
       } 
 
-      <div>
-      <h2>blogs</h2>
-    
-       {/* {this.state.blogs.map(blog =>
-        <Blog key={blog._id} title={blog._title} blog={blog}/>
-      )}  */}
-
-       <ul>
-      { this.state.blogs.map(blog =>
-        <Blog key={blog._id} blog={blog} 
-        deleteBlog={this.deleteBlog(blog.id)}
-        addLike={this.addLike(blog.id)}
-        user={this.state.user}
-         />
-      )}
-      </ul> 
-      
-      {/* <ul>
-      {blogsToDelete.map(blog =>
-      <Blog key={blog.id} blog={blog}
-      deleteNote={this.deleteNote(blog.id)}
-      />  )}
-       </ul> */}
-       </div>
-      </div>
+    <h2>blogs</h2>
+   
+    {/* { blogForSort.sort()} */}
+    {this.state.user === null ?
+    <ul>  {blogsForNonUser} </ul>  :
+    <ul> {blogsForUser}</ul>
+    }
+   
+    </div>
     )
   }
 }
 export default App
-//ulos kirj kirjoita konsoliin
-//window.localStorage.removeItem('loggedBlogappUser')
+

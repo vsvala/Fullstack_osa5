@@ -39,11 +39,6 @@ blogsRouter.post('/', async (request, response) => {
     if (body.url === '') {
       return response.status(400).json({ error: 'url missing' })
     }
-    // if (body.likes === '') {
-    //   console.log("LIKEEEEEEEEEEEEEE")
-    //   body.likes === 5
-    //   //return response.status(400).json({ error: 'like missing' })
-    // }
 
     const user = await User.findById(decodedToken.id)
     //const user = await User.findById(body.userId)
