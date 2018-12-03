@@ -52,13 +52,14 @@ class App extends React.Component {
   // Blogin lisäys tai päivitys
   addBlog = async(event) => {
     event.preventDefault()
-    this.blogForm.toggleVisibility() //piilotetaan lisäysform kun lisätään blogii
+    this.blogForm.toggleVisibility() //piilotetaan lisäysform kun lisätään blogi
     //try {
     const blogObject = {
       title: this.state.newHeader,
       author: this.state.newText,
       url: this.state.newUrl,
       likes:this.state.like,
+      user:this.state.user
     }
     //jos samanniminen blogi olemassa päivitetään
    if (this.includesBlog(blogObject)){
@@ -154,11 +155,11 @@ class App extends React.Component {
       
       const blogObject = {
         id:this.state.id,
-        user:this.state.user,
         title: blog.title,
         author:blog.author,
         url: blog.url,
-        likes:blog.likes+1
+        likes:blog.likes+1,
+        user:this.state.user
       }
       blogService
       .update(blog.id, blogObject)
@@ -311,40 +312,19 @@ const blogForm = () => (
       /> 
       </Togglable>
   )
- //const bylikes =this.state.blogs.map(blogs =>blog={blogs.likes})
- // const liketetyt=bylikes.sort
-
-  // const blogForSort=this.state.blogs.map(blog =>
-  //   <Blog key={blog._id} blog={blog} 
-  //   deleteBlog={this.deleteBlog(blog.id)}
-  //   addLike={this.addLike(blog.id)}
-  //   user={this.state.user}
-  //    />
-  // )
-
-  // const Likes = (b1, b2) => b2.likes - b1.likes
-  // const favorites = this.state.blogs.sort(Likes)
-  // {this.favorites}
-
-  //laita jokaiselle listan undefine==anonymous
-  // if (this.state.blogs.user.name===undefined){
-  //   this.blogs.user.name="Anonymous"
-  // } 
-
-  const blogsForUser=this.state.blogs.map(blog =>
+ 
+/*   const blogsForUser=this.state.blogs.map(blog =>
     <Blog key={blog._id} blog={blog}  
     deleteBlog={this.deleteBlog(blog.id)}
     addLike={this.addLike(blog.id)}
     user={this.state.user}  />     
     //<Togglable buttonLabel="delete"> <button onClick={this.deleteBlog(blog.id)}>delete</button></Togglable> 
-    )
-
-  
+    ) 
      const blogsForNonUser=this.state.blogs.map(blog =>
       <Blog key={blog._id} blog={blog} 
       addLike={this.addLike(blog.id)}
       user={this.state.user}
-       />)
+       />) */
 
     return (
       <div>
@@ -365,14 +345,20 @@ const blogForm = () => (
     <h2>blogs</h2>
    
     {/* { blogForSort.sort()} */}
-    {this.state.user === null ?
+    {/* {this.state.user === null ?
     <ul>  {blogsForNonUser} </ul>  :
     <ul> {blogsForUser}</ul>
-    }
+    } */}
    
+   {this.state.blogs.sort((a,b)=>b.likes-a.likes).map(blog =>
+    <Blog key={blog._id} blog={blog}  
+    deleteBlog={this.deleteBlog(blog.id)}
+    addLike={this.addLike(blog.id)}
+    user={this.state.user}  />     
+    )
+   }
     </div>
     )
   }
 }
 export default App
-
